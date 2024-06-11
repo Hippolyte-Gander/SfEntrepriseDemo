@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Entreprise;
 use App\Form\EntrepriseType;
 use App\Repository\EntrepriseRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,11 +28,24 @@ class EntrepriseController extends AbstractController
     }
 
     #[Route('/entreprise/new', name: 'new_entreprise')]
-    public function new(Request $request): Response
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $entreprise = new Entreprise();
 
         $form =$this->createForm(EntrepriseType::class, $entreprise);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $entreprise = $form->getData();
+            // prepare en PDO
+            $entityManager->persist($entreprise);
+            // execute en PDO
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_entreprise');
+        }
 
         return $this->render('entreprise/new.html.twig', [
             'formAddEntreprise' => $form
