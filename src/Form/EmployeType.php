@@ -36,6 +36,7 @@ class EmployeType extends AbstractType
                     'class' => 'form-control'
                 ]])
             ->add('ville', TextType::class, [
+                'required' => false,
                 'attr' => [
                     'class' => 'form-control'
                 ]])

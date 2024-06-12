@@ -64,4 +64,11 @@ class EntrepriseController extends AbstractController
         ]);
     }
 
+    #[Route('/entreprise/{id}/delete', name: 'delete_entreprise')]
+    public function deleteEmploye(Entreprise $entreprise, EntityManagerInterface $entityManager) {
+        $entityManager->remove($entreprise);
+        $entityManager->flush();
+        
+        return $this->redirectToRoute('app_entreprise');
+    }
 }
